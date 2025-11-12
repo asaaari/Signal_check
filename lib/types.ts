@@ -10,3 +10,9 @@ export interface BackendResponse {
   status: 'green' | 'red';
   message?: string;
 }
+
+export interface Notification {
+  id: string;
+  text: string;
+  timestamp: Date;
+}

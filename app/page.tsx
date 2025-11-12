@@ -3,16 +3,19 @@
 import { useState } from 'react';
 import { UserForm } from '@/components/UserForm';
 import { StatusLight } from '@/components/StatusLight';
+import { NotificationCenter } from '@/components/NotificationCenter';
 import { sendUserInfo } from '@/lib/api';
 import { UserInfo, BackendResponse } from '@/lib/types';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AlertCircle, Bell, CheckSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function Home() {
   const [response, setResponse] = useState<BackendResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState('status');
 
   const handleSubmit = async (userInfo: UserInfo) => {
     setIsLoading(true);
@@ -42,26 +45,43 @@ export default function Home() {
           <p className="mt-2 text-muted-foreground">Integration Test App</p>
         </div>
 
-        <div className="space-y-6">
-          {error && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Error</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="status" className="gap-2">
+              <CheckSquare className="h-4 w-4" />
+              Status Check
+            </TabsTrigger>
+            <TabsTrigger value="notifications" className="gap-2">
+              <Bell className="h-4 w-4" />
+              Notifications
+            </TabsTrigger>
+          </TabsList>
 
-          {!response && <UserForm onSubmit={handleSubmit} isLoading={isLoading} />}
+          <TabsContent value="status" className="space-y-6">
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
 
-          {response && (
-            <>
-              <StatusLight response={response} />
-              <Button onClick={handleReset} variant="outline" className="w-full">
-                Check Again
-              </Button>
-            </>
-          )}
-        </div>
+            {!response && <UserForm onSubmit={handleSubmit} isLoading={isLoading} />}
+
+            {response && (
+              <>
+                <StatusLight response={response} />
+                <Button onClick={handleReset} variant="outline" className="w-full">
+                  Check Again
+                </Button>
+              </>
+            )}
+          </TabsContent>
+
+          <TabsContent value="notifications" className="mt-6">
+            <NotificationCenter isVisible={activeTab === 'notifications'} />
+          </TabsContent>
+        </Tabs>
 
         <footer className="mt-12 text-center text-sm text-muted-foreground">
           <p>PWA enabled - Install for offline access</p>

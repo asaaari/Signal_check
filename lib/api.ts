@@ -1,7 +1,7 @@
 import { UserInfo, BackendResponse, Notification } from './types';
 
 export async function sendUserInfo(userInfo: UserInfo): Promise<BackendResponse> {
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://api.example.com/check';
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://freebsd-saturn-managed-initiative.trycloudflare.com';
 
   try {
     const response = await fetch(backendUrl, {
@@ -25,7 +25,7 @@ export async function sendUserInfo(userInfo: UserInfo): Promise<BackendResponse>
 }
 
 export async function fetchNotifications(): Promise<Notification[]> {
-  const notificationUrl = process.env.NEXT_PUBLIC_NOTIFICATION_URL || 'https://api.example.com/notifications';
+  const notificationUrl = process.env.NEXT_PUBLIC_NOTIFICATION_URL || 'https://freebsd-saturn-managed-initiative.trycloudflare.com';
 
   try {
     const response = await fetch(notificationUrl, {

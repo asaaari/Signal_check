@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { UserForm } from '@/components/UserForm';
-import { StatusLight } from '@/components/StatusLight';
 import { NotificationCenter } from '@/components/NotificationCenter';
 import { sendUserInfo } from '@/lib/api';
 import { UserInfo, BackendResponse } from '@/lib/types';
@@ -26,7 +25,9 @@ export default function Home() {
       const result = await sendUserInfo(userInfo);
       setResponse(result);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to connect to backend');
+      setError(
+        err instanceof Error ? err.message : 'Failed to connect to backend'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -49,7 +50,7 @@ export default function Home() {
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="status" className="gap-2">
               <CheckSquare className="h-4 w-4" />
-              Status Check
+              Submit Test
             </TabsTrigger>
             <TabsTrigger value="notifications" className="gap-2">
               <Bell className="h-4 w-4" />
@@ -57,6 +58,7 @@ export default function Home() {
             </TabsTrigger>
           </TabsList>
 
+          {/* SUBMIT TAB */}
           <TabsContent value="status" className="space-y-6">
             {error && (
               <Alert variant="destructive">
@@ -66,20 +68,38 @@ export default function Home() {
               </Alert>
             )}
 
-            {!response && <UserForm onSubmit={handleSubmit} isLoading={isLoading} />}
+            {!response && (
+              <UserForm onSubmit={handleSubmit} isLoading={isLoading} />
+            )}
 
             {response && (
               <>
-                <StatusLight response={response} />
-                <Button onClick={handleReset} variant="outline" className="w-full">
-                  Check Again
+                <Alert variant="default">
+                  <AlertTitle>Submitted Successfully</AlertTitle>
+                  <AlertDescription>
+                    The backend responded with:{" "}
+                    <pre className="mt-2 whitespace-pre-wrap text-sm">
+                      {JSON.stringify(response, null, 2)}
+                    </pre>
+                  </AlertDescription>
+                </Alert>
+
+                <Button
+                  onClick={handleReset}
+                  variant="outline"
+                  className="w-full"
+                >
+                  Submit Again
                 </Button>
               </>
             )}
           </TabsContent>
 
+          {/* NOTIFICATIONS TAB */}
           <TabsContent value="notifications" className="mt-6">
-            <NotificationCenter isVisible={activeTab === 'notifications'} />
+            <NotificationCenter
+              isVisible={activeTab === 'notifications'}
+            />
           </TabsContent>
         </Tabs>
 
